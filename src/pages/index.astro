@@ -1,0 +1,100 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GuideCard from '../components/GuideCard.astro';
+import { SITE_NAME, SITE_TAGLINE } from '../config';
+import { author } from '../data/author';
+
+const guides = (await getCollection('guides')).sort(
+  (a, b) => b.data.published.valueOf() - a.data.published.valueOf()
+);
+const featured = guides.slice(0, 6);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Is this quote fair?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Use our free tool to compare your contractor quote against published national cost ranges for the same job, then work through the line-item checklist before you sign.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'How many contractor quotes should I get?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Three written quotes for the same scope is the standard baseline for any project over a few thousand dollars.'
+        }
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title={SITE_NAME}
+  description="Forensic, line-by-line analysis of contractor quotes for US homeowners: is this quote fair, what is inflated, and what to ask before you sign."
+  jsonLd={jsonLd}
+>
+  <section class="container hero">
+    <div class="kicker">Contractor quote forensics</div>
+    <h1>{SITE_TAGLINE}</h1>
+    <p class="lede">
+      You got a five-figure quote and one question: <em>am I being ripped off?</em>
+      We take the estimate apart line by line — markup, allowances, hidden fees —
+      from the side of the homeowner, not the contractor.
+    </p>
+    <p>
+      <a class="btn" href="/tools/quote-fairness/">Check my quote — free</a>
+      <a class="btn secondary" href="/guides/" style="margin-left: 0.6rem;">Read the guides</a>
+    </p>
+  </section>
+
+  <section class="container">
+    <div class="card-grid cols-2">
+      <div class="card">
+        <div class="step-num">STEP 1</div>
+        <h3>Answer in the first minute</h3>
+        <p>Every guide opens with the direct answer — fair range, what inflates the number, and the questions worth asking — before any background.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">STEP 2</div>
+        <h3>Run the verdict tool</h3>
+        <p>Pick your job, enter your quote, and see where it lands against published national ranges — plus the exact line items to challenge.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">STEP 3</div>
+        <h3>Negotiate with a script</h3>
+        <p>Each verdict comes with three questions to ask your contractor and the consumer-rights rules that apply before you sign.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">SOURCES</div>
+        <h3>Every number dated</h3>
+        <p>Cost ranges carry a source and a month/year. When a figure is an estimate rather than a fact, we say so.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <h2>Latest guides</h2>
+    <div class="card-grid cols-2">
+      {featured.map((guide) => <GuideCard guide={guide} />)}
+    </div>
+    <p><a href="/guides/">All guides →</a></p>
+  </section>
+
+  <section class="container home-tools">
+    <div class="card">
+      <span class="badge">Free tool</span>
+      <h3 style="margin-top: 0.6rem;">Is this quote fair?</h3>
+      <p>Service + quote amount → verdict (fair / high / inflated) with the line items to check and the questions to ask before you sign.</p>
+      <a class="btn" href="/tools/quote-fairness/">Run the check</a>
+    </div>
+    <div class="disclaimer-box">{author.disclaimer}</div>
+  </section>
+</BaseLayout>

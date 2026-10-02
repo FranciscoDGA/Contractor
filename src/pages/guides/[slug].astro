@@ -1,0 +1,75 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((guide) => ({
+    params: { slug: guide.id },
+    props: { guide }
+  }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: guide.data.title,
+    description: guide.data.description,
+    datePublished: guide.data.published.toISOString(),
+    dateModified: guide.data.updated.toISOString(),
+    inLanguage: 'en-US'
+  },
+  ...(guide.data.faq.length
+    ? [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: guide.data.faq.map((item) => ({
+            '@type': 'Question',
+            name: item.q,
+            acceptedAnswer: { '@type': 'Answer', text: item.a }
+          }))
+        }
+      ]
+    : [])
+];
+---
+
+<BaseLayout title={guide.data.title} description={guide.data.description} jsonLd={jsonLd}>
+  <article class="container prose">
+    <div class="badge">{guide.data.cluster}</div>
+    <h1 style="margin-top: 0.7rem;">{guide.data.title}</h1>
+    <div class="updated">
+      Keyword: <strong>{guide.data.keyword}</strong> ·
+      Published {guide.data.published.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} ·
+      Updated {guide.data.updated.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+    </div>
+
+    <Content />
+
+    {guide.data.faq.length > 0 && (
+      <>
+        <h2 id="faq">Frequently asked questions</h2>
+        {guide.data.faq.map((item) => (
+          <div class="faq-item">
+            <h3>{item.q}</h3>
+            <p>{item.a}</p>
+          </div>
+        ))}
+      </>
+    )}
+
+    <div class="disclaimer-box">
+      Educational information about price, process, and consumer rights — not an
+      inspection, appraisal, structural opinion, or legal advice. We are not
+      licensed contractors. For safety, code, or engineering questions, consult
+      your local building authority or a licensed professional.
+    </div>
+
+    <p><a href="/guides/">← All guides</a> · <a href="/tools/quote-fairness/">Check a quote →</a></p>
+  </article>
+</BaseLayout>

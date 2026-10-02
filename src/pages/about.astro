@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { author } from '../data/author';
+import { SITE_NAME } from '../config';
+---
+
+<BaseLayout
+  title="About & disclosure"
+  description={`About ${SITE_NAME}: who writes these guides, what we are not, and how we handle sources, money, and corrections.`}
+>
+  <section class="container prose">
+    <h1>About & disclosure</h1>
+
+    <p><strong>{author.name}</strong> — {author.role}.</p>
+    <p>{author.bio}</p>
+
+    <div class="callout red">
+      <div class="title">What we are not</div>
+      <p style="margin: 0;">{author.disclaimer}</p>
+    </div>
+
+    <h2>How we handle money</h2>
+    <p>
+      This site may earn revenue from digital products and, later, affiliate
+      links or advertising. Commercial relationships never change a verdict:
+      a quote is measured against published cost data and consumer-rights rules,
+      not against who pays us. Any affiliate link is labeled where it appears.
+    </p>
+
+    <h2>How we handle numbers</h2>
+    <ul>
+      <li>Every cost range carries a source and a month/year ("as of …").</li>
+      <li>We never invent a statistic, price, review, or metric.</li>
+      <li>When data is an estimate rather than a measured fact, it is labeled.</li>
+      <li>Law differs by state; each rights guide names its state and its source.</li>
+    </ul>
+
+    <h2>Corrections</h2>
+    <p>
+      Pricing and rules change. When a published figure is wrong or out of date,
+      we update the page and bump its "Updated" date. The refresh is documented
+      in the page itself — not silently edited.
+    </p>
+
+    <h2>Contact</h2>
+    <p>Questions or corrections: <a href="mailto:hello@quoteforensics.com">hello@quoteforensics.com</a>.</p>
+  </section>
+</BaseLayout>

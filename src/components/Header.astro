@@ -1,0 +1,17 @@
+---
+import { SITE_NAME } from '../config';
+const nav = [
+  { href: '/guides/', label: 'Guides' },
+  { href: '/tools/quote-fairness/', label: 'Is this quote fair?' },
+  { href: '/about/', label: 'About' }
+];
+---
+
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="/">{SITE_NAME}<span>.</span></a>
+    <nav class="nav">
+      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+  </div>
+</header>

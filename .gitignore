@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+.astro/types.d.ts
+npm-debug.log*
+.DS_Store
+.vercel

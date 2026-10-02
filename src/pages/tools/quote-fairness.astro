@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Is this quote fair?',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Any',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description:
+      'Free rules-based tool that compares a contractor quote against published national cost ranges and returns a verdict with the line items to challenge.'
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How does the quote fairness tool work?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'You pick your job and enter your quote. The tool compares it against published national cost ranges for that job and returns one of four verdicts: fair, high, likely inflated, or below range — with the specific line items to challenge.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Is the tool free?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. It runs entirely in your browser. Your numbers are never sent to a server or stored.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Does this replace getting more quotes?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'No. It is a sanity check. Three written quotes for the same scope remains the baseline before any decision.'
+        }
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Is this quote fair?"
+  description="Free tool: compare your contractor quote against published national cost ranges and get a verdict — fair, high, or inflated — plus the line items to challenge before you sign."
+  jsonLd={jsonLd}
+>
+  <section class="container hero">
+    <div class="kicker">Free tool · runs in your browser</div>
+    <h1>Is this quote fair?</h1>
+    <p class="lede">
+      Pick the job, enter the number on the page you were handed, and see where it
+      lands against published national ranges — with the exact questions to ask
+      before you sign.
+    </p>
+  </section>
+
+  <section class="container">
+    <form class="tool" id="quote-tool">
+      <label for="service">1. What is the job?</label>
+      <select id="service" name="service" required>
+        <option value="">Select a job…</option>
+        <option value="hvac">HVAC replacement (furnace + AC)</option>
+        <option value="roof">Roof replacement</option>
+        <option value="kitchen">Kitchen remodel (mid-range)</option>
+        <option value="bathroom">Bathroom remodel (mid-range)</option>
+        <option value="interior_paint">Interior painting (whole home)</option>
+        <option value="exterior_paint">Exterior painting</option>
+        <option value="deck">Deck building</option>
+        <option value="driveway">Concrete driveway</option>
+        <option value="flooring">Hardwood flooring installation</option>
+        <option value="windows">Window replacement (whole home)</option>
+        <option value="drywall">Drywall installation / repair</option>
+        <option value="fence">Fence installation</option>
+      </select>
+
+      <label for="amount">2. Your quote (total, USD)</label>
+      <input
+        id="amount"
+        name="amount"
+        type="number"
+        min="100"
+        step="50"
+        inputmode="numeric"
+        placeholder="e.g. 14000"
+        required
+      />
+      <div class="hint">Use the total on the written quote — not the deposit.</div>
+
+      <label for="bids">3. How many written quotes do you have for the same scope?</label>
+      <select id="bids" name="bids" required>
+        <option value="1">This is my only quote</option>
+        <option value="2">Two quotes</option>
+        <option value="3" selected>Three or more</option>
+      </select>
+
+      <label for="permits">4. Does the quote say who pulls the permit — and that the fee is included?</label>
+      <select id="permits" name="permits" required>
+        <option value="yes">Yes, it is written in the quote</option>
+        <option value="unknown">Not mentioned</option>
+        <option value="no">Permit is excluded / homeowner's responsibility</option>
+      </select>
+
+      <label for="itemized">5. Are labor and materials broken out line by line?</label>
+      <select id="itemized" name="itemized" required>
+        <option value="yes">Yes, itemized</option>
+        <option value="no">One lump sum</option>
+      </select>
+
+      <p style="margin-top: 1.4rem;">
+        <button class="btn" type="submit">Show verdict</button>
+      </p>
+
+      <div class="verdict" id="verdict" role="status" aria-live="polite">
+        <div class="stamp" id="verdict-stamp"></div>
+        <p id="verdict-body" style="margin-bottom: 0.4rem;"></p>
+        <div class="hint" id="verdict-range"></div>
+        <p class="q-label">Before you sign</p>
+        <ul id="verdict-questions"></ul>
+      </div>
+    </form>
+
+    <div class="disclaimer-box">
+      <strong>How this works:</strong> a rules-based comparison against published
+      national cost ranges (compiled from HomeGuide, Fixr, Angi and Forbes Home
+      cost guides, as of October 2026). Ranges are national — labor, access, and
+      finish level move the real number. This is a sanity check, not an
+      appraisal, inspection, or guarantee of any price. We are not licensed
+      contractors.
+    </div>
+  </section>
+
+  <section class="container prose">
+    <h2>What the four verdicts mean</h2>
+    <table>
+      <tr><th>Verdict</th><th>What it says</th></tr>
+      <tr>
+        <td><strong>Inside the range</strong></td>
+        <td>The total sits within the published band for this job. Verify scope before signing — the range is national, so local labor still matters.</td>
+      </tr>
+      <tr>
+        <td><strong>High for this job</strong></td>
+        <td>Above the top of the band by up to 25%. Often explained by access, finish level, or urgency — but it must be explained <em>in writing</em>.</td>
+      </tr>
+      <tr>
+        <td><strong>Likely inflated</strong></td>
+        <td>More than 25% above the top of the band. Challenge the line items before signing; get a second written quote for the same scope.</td>
+      </tr>
+      <tr>
+        <td><strong>Below the band</strong></td>
+        <td>Cheaper than the published floor. Usually means excluded scope, low allowances, or change orders ahead — not a bargain.</td>
+      </tr>
+    </table>
+
+    <h2>Why a "fair" total can still hide problems</h2>
+    <p>
+      The total is the least informative number on the page. A quote can sit
+      inside the range and still carry a front-loaded payment schedule, an
+      undefined allowance, or an open-ended change-order clause. That is what the
+      five questions in the tool are for — they cover the parts of a quote that
+      the total cannot show.
+    </p>
+    <p>
+      For the full line-by-line method, read
+      <a href="/guides/how-to-read-a-contractor-estimate/">how to read a contractor estimate</a>,
+      and for the markup math,
+      <a href="/guides/what-is-a-fair-markup-on-materials/">what is a fair markup on materials</a>.
+    </p>
+  </section>
+
+  <script is:inline src="/scripts/quote-tool.js"></script>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuideCard from '../../components/GuideCard.astro';
+
+const guides = (await getCollection('guides')).sort(
+  (a, b) => b.data.published.valueOf() - a.data.published.valueOf()
+);
+
+const groups = [
+  { key: 'forensic', label: 'Quote forensics', blurb: 'Line-by-line reads of real quote patterns.' },
+  { key: 'cost', label: 'Cost guides', blurb: 'What the job should cost, with dated sources.' },
+  { key: 'state', label: 'Rights by state', blurb: 'License, lien, and contract rules.' },
+  { key: 'tool', label: 'Tools', blurb: 'Checkers and calculators.' }
+] as const;
+---
+
+<BaseLayout
+  title="Guides"
+  description="All contractor quote forensics guides: how to read an estimate, fair markup, comparing bids, red flags, and consumer rights."
+>
+  <section class="container hero">
+    <div class="kicker">Library</div>
+    <h1>All guides</h1>
+    <p class="lede">Sorted by publish date. Every guide answers in the opening lines and carries its sources.</p>
+  </section>
+
+  <section class="container">
+    {groups.map((group) => {
+      const items = guides.filter((g) => g.data.cluster === group.key);
+      if (items.length === 0) return null;
+      return (
+        <div>
+          <h2>{group.label}</h2>
+          <p style="color: var(--ink-soft); font-size: 0.95rem;">{group.blurb}</p>
+          <div class="card-grid cols-2">
+            {items.map((guide) => <GuideCard guide={guide} />)}
+          </div>
+        </div>
+      );
+    })}
+  </section>
+</BaseLayout>

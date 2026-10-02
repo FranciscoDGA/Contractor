@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy"
+  description="How Quote Forensics handles data: no account, no sale of personal data, minimal analytics."
+>
+  <section class="container prose">
+    <h1>Privacy</h1>
+    <p>Last updated: October 1, 2026.</p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li><strong>No account, no login.</strong> The site works without any personal data.</li>
+      <li><strong>The quote tool runs in your browser.</strong> Your quote values are not sent to our servers and are not stored.</li>
+      <li><strong>Standard server logs</strong> (IP, user agent, path) may be kept by our host for security and uptime.</li>
+      <li><strong>Analytics</strong>, when enabled, are privacy-light and aggregated. No advertising profile is built.</li>
+    </ul>
+
+    <h2>What we never do</h2>
+    <ul>
+      <li>We do not sell, rent, or trade personal data.</li>
+      <li>We do not submit your quote values to third parties.</li>
+      <li>We do not use dark patterns, fake urgency, or pop-up traps.</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>
+      The site sets no non-essential cookies by default. If a third-party service
+      (for example, a payment provider at checkout) sets cookies, it is disclosed
+      at the point of use.
+    </p>
+
+    <h2>Contact</h2>
+    <p>Privacy questions: <a href="mailto:hello@quoteforensics.com">hello@quoteforensics.com</a>.</p>
+  </section>
+</BaseLayout>
