@@ -52,7 +52,7 @@
     var kind, headline, message;
 
     if (amount < service.low) {
-      kind = 'high';
+      kind = 'below';
       headline = 'Below the published range';
       message =
         usd(amount) +

@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "typecheck": "astro check",
     "lint": "node scripts/lint.mjs",
+    "og": "node scripts/og-image.mjs",
     "check": "npm run build && npm run typecheck && npm run lint"
   },
   "dependencies": {

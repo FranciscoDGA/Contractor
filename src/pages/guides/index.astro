@@ -8,10 +8,10 @@ const guides = (await getCollection('guides')).sort(
 );
 
 const groups = [
-  { key: 'forensic', label: 'Quote forensics', blurb: 'Line-by-line reads of real quote patterns.' },
-  { key: 'cost', label: 'Cost guides', blurb: 'What the job should cost, with dated sources.' },
-  { key: 'state', label: 'Rights by state', blurb: 'License, lien, and contract rules.' },
-  { key: 'tool', label: 'Tools', blurb: 'Checkers and calculators.' }
+  { key: 'forensic', label: 'Quote forensics', blurb: 'Line-by-line reads of real quote patterns — scope, markup, allowances, payment schedule.' },
+  { key: 'cost', label: 'Cost checks', blurb: 'Is that number too high? Benchmarked against published national cost guides, dated.' },
+  { key: 'state', label: 'Rights by state', blurb: 'License, lien, and contract rules where the project actually happens.' },
+  { key: 'tool', label: 'Tools', blurb: 'Checkers and calculators that run in your browser.' }
 ] as const;
 ---
 
@@ -31,8 +31,11 @@ const groups = [
       if (items.length === 0) return null;
       return (
         <div>
-          <h2>{group.label}</h2>
-          <p style="color: var(--ink-soft); font-size: 0.95rem;">{group.blurb}</p>
+          <div class="group-head">
+            <h2>{group.label}</h2>
+            <span class="count">{items.length} {items.length === 1 ? 'guide' : 'guides'}</span>
+          </div>
+          <p class="group-blurb">{group.blurb}</p>
           <div class="card-grid cols-2">
             {items.map((guide) => <GuideCard guide={guide} />)}
           </div>

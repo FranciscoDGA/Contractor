@@ -5,3 +5,6 @@ dist/
 npm-debug.log*
 .DS_Store
 .vercel
+.gstack/
+_shots/
+preview.log

@@ -1,17 +1,31 @@
 ---
 import { SITE_NAME } from '../config';
+
+const path = Astro.url.pathname;
 const nav = [
   { href: '/guides/', label: 'Guides' },
-  { href: '/tools/quote-fairness/', label: 'Is this quote fair?' },
   { href: '/about/', label: 'About' }
 ];
+
+const isActive = (href: string) => path === href || path.startsWith(href) && href !== '/';
 ---
 
 <header class="site-header">
   <div class="inner">
     <a class="brand" href="/">{SITE_NAME}<span>.</span></a>
-    <nav class="nav">
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    <nav class="nav" aria-label="Main">
+      {nav.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))}
+      <a
+        class="nav-cta"
+        href="/tools/quote-fairness/"
+        aria-current={isActive('/tools/') ? 'page' : undefined}
+      >
+        Is this quote fair?
+      </a>
     </nav>
   </div>
 </header>

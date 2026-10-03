@@ -2,8 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { SITE_NAME, SITE_URL } from '../config';
-import { author } from '../data/author';
+import { SITE_NAME, SITE_URL, SITE_TAGLINE } from '../config';
 
 interface Props {
   title: string;
@@ -12,8 +11,10 @@ interface Props {
 }
 
 const { title, description, jsonLd = [] } = Astro.props;
-const fullTitle = title === SITE_NAME ? `${SITE_NAME} — ${title}` : `${title} | ${SITE_NAME}`;
+const isHome = Astro.url.pathname === '/';
+const fullTitle = isHome ? `${SITE_NAME} — ${SITE_TAGLINE}` : `${title} | ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname, SITE_URL).href;
+const ogImage = new URL('/og.png', SITE_URL).href;
 
 const baseLd = {
   '@context': 'https://schema.org',
@@ -22,10 +23,18 @@ const baseLd = {
   url: SITE_URL,
   description
 };
+
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: `Educational guides and a free verdict tool that help US homeowners read contractor quotes line by line.`
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -33,27 +42,35 @@ const baseLd = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap"
+    />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={isHome ? 'website' : 'article'} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={SITE_NAME} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <script type="application/ld+json" set:html={JSON.stringify(baseLd)} />
     {jsonLd.map((ld) => <script type="application/ld+json" set:html={JSON.stringify(ld)} />)}
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <Header />
-    <main>
+    <main id="main">
       <slot />
     </main>
     <Footer />
-    <script type="application/ld+json" set:html={JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: SITE_NAME,
-      url: SITE_URL,
-      description: author.disclaimer
-    })} />
+    <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />
   </body>
 </html>

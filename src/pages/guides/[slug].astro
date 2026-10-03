@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_URL } from '../../config';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -11,7 +12,12 @@ export async function getStaticPaths() {
 }
 
 const { guide } = Astro.props;
-const { Content } = await render(guide);
+const { Content, headings } = await render(guide);
+
+const toc = headings.filter((h) => h.depth === 2 && h.slug !== 'sources' && h.slug !== 'frequently-asked-questions');
+
+const words = (guide.body ?? '').split(/\s+/).filter(Boolean).length;
+const readMin = Math.max(1, Math.round(words / 220));
 
 const jsonLd = [
   {
@@ -21,8 +27,22 @@ const jsonLd = [
     description: guide.data.description,
     datePublished: guide.data.published.toISOString(),
     dateModified: guide.data.updated.toISOString(),
-    inLanguage: 'en-US'
+    inLanguage: 'en-US',
+    mainEntityOfPage: `${SITE_URL}/guides/${guide.id}/`
   },
+  ...(toc.length > 1
+    ? [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+            { '@type': 'ListItem', position: 2, name: 'Guides', item: `${SITE_URL}/guides/` },
+            { '@type': 'ListItem', position: 3, name: guide.data.title, item: `${SITE_URL}/guides/${guide.id}/` }
+          ]
+        }
+      ]
+    : []),
   ...(guide.data.faq.length
     ? [
         {
@@ -41,13 +61,30 @@ const jsonLd = [
 
 <BaseLayout title={guide.data.title} description={guide.data.description} jsonLd={jsonLd}>
   <article class="container prose">
-    <div class="badge">{guide.data.cluster}</div>
-    <h1 style="margin-top: 0.7rem;">{guide.data.title}</h1>
-    <div class="updated">
-      Keyword: <strong>{guide.data.keyword}</strong> ·
-      Published {guide.data.published.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} ·
-      Updated {guide.data.updated.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/guides/">Guides</a> / {guide.data.title}
+    </nav>
+
+    <div class="guide-head">
+      <span class="badge">{guide.data.cluster === 'forensic' ? 'Quote forensics' : guide.data.cluster === 'cost' ? 'Cost check' : guide.data.cluster === 'state' ? 'Rights by state' : 'Tool'}</span>
+      <h1>{guide.data.title}</h1>
     </div>
+    <div class="guide-meta">
+      <span>Published {guide.data.published.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+      <span class="dot">·</span>
+      <span>Updated {guide.data.updated.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+      <span class="dot">·</span>
+      <span>{readMin} min read</span>
+    </div>
+
+    {toc.length > 2 && (
+      <nav class="toc" aria-label="Table of contents">
+        <div class="label">On this page</div>
+        <ul>
+          {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+        </ul>
+      </nav>
+    )}
 
     <Content />
 
@@ -63,6 +100,14 @@ const jsonLd = [
       </>
     )}
 
+    <div class="inline-cta">
+      <div>
+        <h3>Got a quote in your hand?</h3>
+        <p>Run it against published national ranges in 30 seconds — free, in your browser.</p>
+      </div>
+      <a class="btn" href="/tools/quote-fairness/">Check my quote</a>
+    </div>
+
     <div class="disclaimer-box">
       Educational information about price, process, and consumer rights — not an
       inspection, appraisal, structural opinion, or legal advice. We are not
@@ -70,6 +115,6 @@ const jsonLd = [
       your local building authority or a licensed professional.
     </div>
 
-    <p><a href="/guides/">← All guides</a> · <a href="/tools/quote-fairness/">Check a quote →</a></p>
+    <p><a href="/guides/">← All guides</a></p>
   </article>
 </BaseLayout>

@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GuideCard from '../components/GuideCard.astro';
-import { SITE_NAME, SITE_TAGLINE } from '../config';
+import { SITE_TAGLINE } from '../config';
 import { author } from '../data/author';
 
 const guides = (await getCollection('guides')).sort(
@@ -20,7 +20,7 @@ const jsonLd = [
         name: 'Is this quote fair?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Use our free tool to compare your contractor quote against published national cost ranges for the same job, then work through the line-item checklist before you sign.'
+          text: 'Use our free tool to compare your contractor quote against published national cost ranges for the same job, then work through the line-item checklist before you sign. The tool returns one of four verdicts: inside the range, high, likely inflated, or below the band.'
         }
       },
       {
@@ -30,6 +30,14 @@ const jsonLd = [
           '@type': 'Answer',
           text: 'Three written quotes for the same scope is the standard baseline for any project over a few thousand dollars.'
         }
+      },
+      {
+        '@type': 'Question',
+        name: 'What is a fair markup on materials?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Published trade guidance puts contractor material markup commonly in the 10%–20% range, depending on the trade and the region. The number only matters once labor and materials are separated on the page.'
+        }
       }
     ]
   }
@@ -37,7 +45,7 @@ const jsonLd = [
 ---
 
 <BaseLayout
-  title={SITE_NAME}
+  title="Contractor Quote Forensics"
   description="Forensic, line-by-line analysis of contractor quotes for US homeowners: is this quote fair, what is inflated, and what to ask before you sign."
   jsonLd={jsonLd}
 >
@@ -49,30 +57,50 @@ const jsonLd = [
       We take the estimate apart line by line — markup, allowances, hidden fees —
       from the side of the homeowner, not the contractor.
     </p>
-    <p>
+    <div class="hero-actions">
       <a class="btn" href="/tools/quote-fairness/">Check my quote — free</a>
-      <a class="btn secondary" href="/guides/" style="margin-left: 0.6rem;">Read the guides</a>
-    </p>
+      <a class="btn secondary" href="/guides/">Read the guides</a>
+    </div>
+    <p class="hero-note">Runs in your browser. No account, nothing stored, nothing sent.</p>
+
+    <div class="proof-strip">
+      <div>
+        <strong>{guides.length}</strong>
+        <span>guides published</span>
+      </div>
+      <div>
+        <strong>12</strong>
+        <span>jobs priced in the tool</span>
+      </div>
+      <div>
+        <strong>$0</strong>
+        <span>cost, no sign-up</span>
+      </div>
+      <div>
+        <strong>100%</strong>
+        <span>sources dated</span>
+      </div>
+    </div>
   </section>
 
-  <section class="container">
+  <section class="container section">
     <div class="card-grid cols-2">
-      <div class="card">
+      <div class="card feature-card">
         <div class="step-num">STEP 1</div>
         <h3>Answer in the first minute</h3>
         <p>Every guide opens with the direct answer — fair range, what inflates the number, and the questions worth asking — before any background.</p>
       </div>
-      <div class="card">
+      <div class="card feature-card">
         <div class="step-num">STEP 2</div>
         <h3>Run the verdict tool</h3>
         <p>Pick your job, enter your quote, and see where it lands against published national ranges — plus the exact line items to challenge.</p>
       </div>
-      <div class="card">
+      <div class="card feature-card">
         <div class="step-num">STEP 3</div>
         <h3>Negotiate with a script</h3>
         <p>Each verdict comes with three questions to ask your contractor and the consumer-rights rules that apply before you sign.</p>
       </div>
-      <div class="card">
+      <div class="card feature-card">
         <div class="step-num">SOURCES</div>
         <h3>Every number dated</h3>
         <p>Cost ranges carry a source and a month/year. When a figure is an estimate rather than a fact, we say so.</p>
@@ -80,19 +108,24 @@ const jsonLd = [
     </div>
   </section>
 
-  <section class="container">
-    <h2>Latest guides</h2>
+  <section class="container section">
+    <div class="section-head">
+      <h2>Latest guides</h2>
+      <p>Direct answer up top, sources at the bottom, nothing invented in between.</p>
+    </div>
     <div class="card-grid cols-2">
       {featured.map((guide) => <GuideCard guide={guide} />)}
     </div>
-    <p><a href="/guides/">All guides →</a></p>
+    <p><a class="section-head more" href="/guides/">All {guides.length} guides →</a></p>
   </section>
 
   <section class="container home-tools">
-    <div class="card">
-      <span class="badge">Free tool</span>
-      <h3 style="margin-top: 0.6rem;">Is this quote fair?</h3>
-      <p>Service + quote amount → verdict (fair / high / inflated) with the line items to check and the questions to ask before you sign.</p>
+    <div class="inline-cta">
+      <div>
+        <span class="badge stamp">Free tool</span>
+        <h3>Is this quote fair?</h3>
+        <p>Service + quote amount → verdict with the line items to check and the questions to ask before you sign.</p>
+      </div>
       <a class="btn" href="/tools/quote-fairness/">Run the check</a>
     </div>
     <div class="disclaimer-box">{author.disclaimer}</div>

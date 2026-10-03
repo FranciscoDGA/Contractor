@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="That page does not exist. Browse the contractor quote guides or run the quote fairness tool."
+>
+  <section class="container notfound">
+    <div class="code">404</div>
+    <h1>That page isn't here</h1>
+    <p class="muted">The link may be old, or the page may have moved.</p>
+    <div class="hero-actions">
+      <a class="btn" href="/tools/quote-fairness/">Check a quote</a>
+      <a class="btn secondary" href="/guides/">All guides</a>
+    </div>
+  </section>
+</BaseLayout>

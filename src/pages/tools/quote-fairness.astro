@@ -58,6 +58,12 @@ const jsonLd = [
       lands against published national ranges — with the exact questions to ask
       before you sign.
     </p>
+    <div class="proof-strip">
+      <div><strong>12</strong><span>jobs priced</span></div>
+      <div><strong>4</strong><span>possible verdicts</span></div>
+      <div><strong>$0</strong><span>to run</span></div>
+      <div><strong>0</strong><span>numbers stored</span></div>
+    </div>
   </section>
 
   <section class="container">
@@ -112,14 +118,14 @@ const jsonLd = [
         <option value="no">One lump sum</option>
       </select>
 
-      <p style="margin-top: 1.4rem;">
+      <div class="submit-row">
         <button class="btn" type="submit">Show verdict</button>
-      </p>
+      </div>
 
       <div class="verdict" id="verdict" role="status" aria-live="polite">
         <div class="stamp" id="verdict-stamp"></div>
-        <p id="verdict-body" style="margin-bottom: 0.4rem;"></p>
-        <div class="hint" id="verdict-range"></div>
+        <p id="verdict-body"></p>
+        <div class="range-note" id="verdict-range"></div>
         <p class="q-label">Before you sign</p>
         <ul id="verdict-questions"></ul>
       </div>
@@ -171,6 +177,14 @@ const jsonLd = [
       and for the markup math,
       <a href="/guides/what-is-a-fair-markup-on-materials/">what is a fair markup on materials</a>.
     </p>
+
+    <div class="inline-cta">
+      <div>
+        <h3>Want the full method?</h3>
+        <p>Nine guides on reading, comparing, and challenging a contractor quote — all free.</p>
+      </div>
+      <a class="btn" href="/guides/">Browse the guides</a>
+    </div>
   </section>
 
   <script is:inline src="/scripts/quote-tool.js"></script>
